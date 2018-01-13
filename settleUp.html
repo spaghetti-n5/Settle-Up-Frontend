@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta lang="en-US" />
+  <meta name="description" content="Calculating and drawing graphs" />
+  <meta name="author" content="Eleonora" />
+  <title>Expense</title>
+  <!--Importing Chart library-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+</head>
+
+<body>
+<h1>Expenses of November 2017</h1><br />
+<canvas id="myChart" width="1000" height="500"></canvas> <br />
+<input type="button" onclick="partial()" value="Partial" />
+<input type="button" onclick="porpouse()" value="Porpouses" />
+<input type="button" onclick="time()" value="Time" /> <br />
+<p id="resultsNov"></p> <br />
+<p id="resultsOct"></p>
+
+<!--Global hidden attibute of HTML elements-->
+<p hidden id="txt">Who paid,Amount,Currency,For whom,Split amounts,Purpose,Date & time,Exchange rate,Type,Receipt
+Fiocolina,100,EUR,Cappu,100,Debts,2017-10-02 20:25:48,,expense,
+Cappu,6.2,EUR,Cappu;Fiocolina,3.1;3.1,Mercado,2017-10-14 12:35:58,,expense,
+Cappu,28.9,EUR,Cappu;Fiocolina,14.45;14.45,Kaufland,2017-10-14 13:28:13,,expense,
+Cappu,8.11,EUR,Cappu;Fiocolina,4.055;4.055,Kaufland,2017-10-20 20:04:46,,expense,
+Cappu,16.03,EUR,Cappu;Fiocolina,8.015;8.015,Kaufland,2017-10-21 11:24:09,,expense,
+Cappu,8.76,EUR,Cappu;Fiocolina,4.38;4.38,Supermarket,2017-10-21 23:15:15,,expense,
+Cappu,10,EUR,Cappu;Fiocolina,5;5,Medicine Gatto,2017-10-26 19:17:41,,expense,
+Fiocolina,9.14,EUR,Fiocolina;Cappu,4.57;4.57,Lidl,2017-10-26 19:19:22,,expense,
+Fiocolina,2.45,EUR,Cappu;Fiocolina,1.225;1.225,Collarino Gatto,2017-10-26 19:19:44,,expense,
+Fiocolina,4.95,EUR,Cappu,4.95,Dm,2017-10-26 19:20:01,,expense,
+Fiocolina,1.2,EUR,Cappu;Fiocolina,0.6;0.6,Dm,2017-10-26 19:20:30,,expense,
+Cappu,9.3,EUR,Cappu;Fiocolina,4.65;4.65,Bauhaus,2017-10-31 09:50:47,,expense,
+Cappu,39.1,EUR,Cappu;Fiocolina,19.55;19.55,Kaufland,2017-10-31 09:51:34,,expense,
+Cappu,9.48,EUR,Cappu;Fiocolina,4.74;4.74,Gatto,2017-10-31 09:52:03,,expense,
+Cappu,3.99,EUR,Cappu;Fiocolina,1.995;1.995,Aldi,2017-10-31 09:52:43,,expense,
+Cappu,52.17,EUR,Pucelina,52.17,Debts,2017-10-31 10:00:41,,expense,
+Cappu,18.61,EUR,Cappu;Pucelina,9.305;9.305,Real,2017-11-05 11:27:55,,expense,
+Cappu,5.89,EUR,Cappu;Pucelina,2.945;2.945,Gatto pulgoso,2017-11-05 11:30:24,,expense,
+Cappu,28.9,EUR,Cappu;Pucelina,14.45;14.45,Kaufland,2017-11-05 11:30:58,,expense,
+Pucelina,15.87,EUR,Cappu;Pucelina,7.935;7.935,Kaufland,2017-11-09 19:29:35,,expense,
+Cappu,6.76,EUR,Cappu;Pucelina,3.38;3.38,Lidl,2017-11-09 23:11:13,,expense,
+Cappu,22,EUR,Cappu;Pucelina,11;11,Kaufland,2017-11-09 23:11:37,,expense,
+Cappu,15.98,EUR,Cappu;Pucelina,7.99;7.99,Kaufland,2017-11-11 17:07:16,,expense,
+Pucelina,9,EUR,Cappu;Pucelina,4.5;4.5,Gatto pulgoso,2017-11-13 14:10:47,,expense,
+Cappu,9,EUR,Cappu;Pucelina,4.5;4.5,Kebabs seestrasse,2017-11-13 14:12:28,,expense,
+Cappu,80.92,EUR,Cappu;Pucelina,40.46;40.46,Castracion gatto,2017-11-17 16:39:51,,expense,
+Cappu,43.62,EUR,Cappu;Pucelina,21.81;21.81,Kaufland,2017-11-18 16:57:44,,expense,
+Pucelina,3.45,EUR,Cappu;Pucelina,1.725;1.725,Dm,2017-11-20 22:30:28,,expense,
+Cappu,125,EUR,Pucelina,125,Iota 22.11.2017,2017-11-22 22:11:26,,expense,
+Cappu,6.45,EUR,Cappu;Pucelina,3.225;3.225,,2017-11-23 08:45:23,,expense,
+Pucelina,150,EUR,Cappu,150,Debts,2017-11-23 20:39:32,,transfer,
+Cappu,2.8,EUR,Cappu;Pucelina,1.4;1.4,Home,2017-11-25 21:57:24,,expense,
+Cappu,39.27,EUR,Cappu;Pucelina,19.635;19.635,Groceries,2017-11-25 21:57:50,,expense,
+Pucelina,20.43,EUR,Cappu;Pucelina,10.215;10.215,Bauhaus,2017-11-28 20:14:08,,expense,</p>
+
+  <script>
+    var text = document.getElementById("txt").innerHTML;
+    var lines = [];
+    var words = [];
+    var expenseHalf = 0;
+    var expensePucelina = 0;
+    var expP = 0;
+    var expenseCappu = 0;
+    var expS = 0;
+    var expB = 0;
+    var expG = 0;
+    var s = "";
+    var b = "";
+    var g = "";
+    var chart =  null; //Chart declared as global variable so I can destroy it before creating a new one//
+
+    function partial() {
+      lines = text.split("\n");
+      console.log(lines);
+      //String text is transformed into an array where each line correspond to an element of the array//
+      for (var i = 0; i < lines.length; i++) {
+        words = lines[i].split(",");
+        console.log("lines are arrays containing words", words);
+          if (words[3] == "Cappu;Pucelina") {
+            expenseHalf += words[1]/2;
+          }else if (words[3] == "Pucelina" || words[3]== "Cappu") {
+            expP += words[1];
+          }
+          expenseCappu = expenseHalf;
+          expensePucelina = parseFloat(expenseHalf) + parseFloat(expP);
+          console.log("expenseCappu",expenseCappu);
+          console.log("expensePucelina",expensePucelina);
+      }
+      graphPartial();
+    }
+    //run function when page is loaded: <body onload="partial();"> or //
+    window.onload = partial();
+
+    //Drawing the chart//
+    function graphPartial(){
+    var ctx = document.getElementById('myChart').getContext('2d');
+    chart = new Chart(ctx, {
+        type: 'bar',
+        // The data for our dataset
+        data: {
+            labels: ["Pucelina", "Cappu"],
+            datasets: [{
+                label: "Expenses for Cappu and Pucelina",
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: [expensePucelina, expenseCappu],
+            }]
+        },
+        // Configuration options go here
+        options: {
+          /*The width and height property of the canvas only work if the Chart.js' responsive mode is
+          false (which is true by default)*/
+          responsive: false,
+          legend: {
+            display: true,
+          },
+          title: {
+            display: true,
+            text: "Expenses for Cappu and Pucelina in November"
+          },
+          //set y axes starting from 0//
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+    });
+  }
+
+
+    function porpouse() {
+      lines = text.split("\n");
+      for (var i = 0; i < lines.length; i++) {
+        words = lines[i].split(",");
+          if (words[5]=="Kaufland" || words[5]=="Real" || words[5]=="Lidl" ||
+          words[5]=="Dm" || words[5]=="Groceries" || words[5]=="Aldi" || words[5]=="Supermarket" ||
+           words[5] == "Mercado") {
+            expS += parseFloat(words[1]);
+            s = Number(expS.toFixed(2));
+          }
+          else if (words[5]=="Bauhaus") {
+            expB += parseFloat(words[1]);
+            b = Number(expB.toFixed(2));
+          }
+          else if (words[5]== "Gatto pulgoso" || words[5] == "Castracion gatto" || words[5].includes("Gatto")==true) {
+            expG += parseFloat(words[1]);
+            //The global method Number() can convert strings to numbers.
+            g = Number(expG.toFixed(2));
+          }
+        }
+        console.log("Supermarket",s);
+        console.log("Bauhaus",b);
+        console.log("gatto",g);
+        //number.toFixed() returns a string not a number with 2 decimal positions
+
+        graphPorpouse();
+      }
+
+
+    function graphPorpouse(){
+    var ctx = document.getElementById('myChart').getContext('2d');
+    //Destroy the previous chart before displaying a new one//
+      if(chart != null){
+        chart.destroy();
+      }
+      chart = new Chart(ctx, {
+          type: 'bar',
+          // The data for our dataset
+          data: {
+              labels: ["Supermarket", "Bauhaus", "Gatto"],
+              datasets: [{
+                  label: "Expenses for Cappu and Pucelina",
+                  backgroundColor: 'rgb(255, 99, 132)',
+                  borderColor: 'rgb(255, 99, 132)',
+                  data: [s, b, g],
+              }]
+          },
+          // Configuration options go here
+          options: {
+            responsive: false,
+            legend: {
+              display: true,
+            },
+            title: {
+              display: true,
+              text: "Expenses for Cappu and Pucelina in November"
+            },
+            //set y axes starting from 0//
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            }
+          }
+      });
+    }
+
+
+    var money = [];
+    var labels = [];
+    function time(){
+      lines = text.split("\n");
+      for (var i=0;i<32;i++) {
+        money[i] = 0;
+      }
+      for (var i = 0; i < lines.length; i++) {
+        words = lines[i].split(",");
+        words[6] = words[6].slice(0,10);
+        //console.log(words[6]);
+        if (words[6].includes("2017-11-") == true) {
+              labels.push(words[6]);
+              var day = words[6].split('-')[2];
+              day = parseInt(day);
+              money[day] += parseInt(words[1]);
+            }
+      }
+    console.log(money);
+    console.log(labels);
+
+      graphTime();
+    }
+
+
+    function graphTime(){
+    var ctx = document.getElementById('myChart').getContext('2d');
+    if(chart != null){
+      chart.destroy();
+    }
+    chart = new Chart(ctx, {
+    type: 'line',
+    // The data for our dataset
+    data: {
+        labels: labels, //without brakets because is an Array
+        datasets: [{
+            label: "Expenses for Cappu and Pucelina",
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: money, //without brakets because is an Array
+        }]
+    },
+    // Configuration options go here
+    options: {
+      responsive: false,
+      legend: {
+        display: true,
+      },
+      title: {
+        display: true,
+        text: "Expenses for Cappu and Pucelina in November"
+      },
+      //set y axes starting from 0//
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+  }
+
+
+var sumNovember = 0;
+var sumOctober = 0;
+function sum() {
+  for (var i = 1; i < lines.length; i++) {
+    words = lines[i].split(",");
+    if (words[6].includes("2017-11-")== true) {
+      sumNovember += parseFloat(words[1]);
+    }else if (words[6].includes("2017-10-")== true) {
+      sumOctober += parseFloat(words[1]);
+    }
+  }
+  document.getElementById("resultsNov").innerHTML = "Total expense of November 2017 = "+
+  Number(sumNovember.toFixed(2)) + "€";
+  document.getElementById("resultsOct").innerHTML = "Total expense of October 2017 = "+
+  Number(sumOctober.toFixed(2)) + "€";
+}
+
+window.onload = sum();
+
+  </script>
+
+</body>
+
+</html>
