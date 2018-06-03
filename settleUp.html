@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="utf-8" />
   <meta lang="en-US" />
@@ -72,7 +71,6 @@ Pucelina,20.43,EUR,Cappu;Pucelina,10.215;10.215,Bauhaus,2017-11-28 20:14:08,,exp
     var b = "";
     var g = "";
     var chart =  null; //Chart declared as global variable so I can destroy it before creating a new one//
-
     function partial() {
       lines = text.split("\n");
       console.log(lines);
@@ -285,10 +283,10 @@ function sum() {
   Number(sumNovember.toFixed(2)) + "€";
   document.getElementById("resultsOct").innerHTML = "Total expense of October 2017 = "+
   Number(sumOctober.toFixed(2)) + "€";
+
 }
 
 window.onload = sum();
-
   </script>
 
 </body>
